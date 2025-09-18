@@ -1,0 +1,72 @@
+<script setup lang="ts">
+import AppLayout from '@/layouts/AppLayout.vue';
+import { type BreadcrumbItem } from '@/types';
+import { ProductResource } from '@/types/product';
+import { Head } from '@inertiajs/vue3';
+import { formatCurrency, formatDateTime } from '@/utils/helper';
+import { route } from 'ziggy-js';
+import { Link } from '@inertiajs/vue3';
+import { computed } from 'vue';
+import { CategoryResource } from '@/types/category';
+import List from '../products/List.vue';
+import { Links, Meta } from '@/types/pagination';
+
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Info Kategori',
+        href: '/categories',
+    },
+];
+
+interface Response {
+    data: ProductResource[],
+    links: Links,
+    meta: Meta,
+}
+
+const { category, products } = defineProps<{ category: CategoryResource, products: Response }>()
+
+</script>
+
+<template>
+
+    <Head title="Category" />
+
+    <AppLayout :breadcrumbs="breadcrumbs">
+        <div class="flex flex-col items-center">
+            <div class="w-9/10 mt-4 mb-6">
+                <div class="grid grid-cols-3 gap-4 my-2">
+                    <div class="box-content md:box-border w-full rounded-lg bg-white shadow-lg shadow-blue-500/10">
+                        <img :src="category.image_path" alt="image preview" class="aspect-4/3 object-fit">
+                    </div>
+                    <div class="grid col-span-2 justify-items-start">
+                        <div class="overflow-x-auto">
+                            <table class="table border-separate border-spacing-x-4 w-full">
+                                <tbody>
+                                    <tr>
+                                        <th class="size-4xl font-semibold opacity-60 w-32">Nama</th>
+                                        <td>{{ category.name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="size-4xl font-semibold opacity-60 w-32">Keterangan</th>
+                                        <td>{{ category.description }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="size-4xl font-semibold opacity-60 w-32">Total Barang</th>
+                                        <td>{{ products.data.length }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="size-4xl font-semibold opacity-60 w-32">Dibuat</th>
+                                        <td>{{ formatDateTime(category.created_at) }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <List :products="products"></List>
+            </div>
+        </div>
+    </AppLayout>
+</template>

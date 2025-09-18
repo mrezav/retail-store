@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\CategoryResource;
+use App\Http\Resources\ProductResource;
 use Inertia\Inertia;
 use App\Models\Category;
 use Illuminate\Support\Str;
@@ -97,5 +98,15 @@ class CategoryController extends Controller
         $category->delete();
 
         return redirect()->route('categories.index')->with('message', 'Category deleted successfully.');
+    }
+
+    public function show(string $id)
+    {
+        $category = Category::findorfail($id);
+        $products = $category->products()->with('variants')->paginate(10);
+        return Inertia::render('categories/Detail', [
+            'category' => new CategoryResource($category),
+            'products' => ProductResource::collection($products)
+        ]);
     }
 }

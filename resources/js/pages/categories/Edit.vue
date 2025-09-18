@@ -7,6 +7,7 @@ import { Head, Link } from '@inertiajs/vue3';
 import AppLayout from '@/layouts/AppLayout.vue';
 import Button from '@/components/ui/button/Button.vue';
 import { Loader2 } from 'lucide-vue-next';
+import { CategoryResource } from '../../types/category';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -16,24 +17,15 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
  
-const {category} = defineProps<{category: {
-    id: number,
-    name: string,
-    slug: string,
-    description: string,
-    image_path: string,
-}}>();
-
-console.log('Category >>>', category);
+const {category} = defineProps<{category:CategoryResource}>();
 
 const form = useForm<CategoryForm>({
     name: category.name,
     description: category.description,
     image: null,
     imagePreview: category.image_path,
+    _method: 'put'
 });
-
-console.log('Form >>>', form);
 
 function handleFile(event: Event) {
     const target = event.target as HTMLInputElement;
@@ -46,7 +38,7 @@ function handleFile(event: Event) {
 }
 
 function submitForm() {
-    form.post(route('categories.update', category.id), {
+    form.post(route('categories.update', {id:category.id}), {
         preserveScroll: true,
     });
 }

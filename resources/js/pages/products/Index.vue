@@ -6,7 +6,7 @@ import { Links } from '@/types/pagination';
 import { Meta } from '../../types/pagination';
 import { ProductResource } from '@/types/product';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Check, Pencil, Trash, OctagonAlert } from 'lucide-vue-next';
+import { Check, Pencil, Trash, OctagonAlert, ReceiptText } from 'lucide-vue-next';
 import { Plus } from 'lucide-vue-next';
 import Button from '@/components/ui/button/Button.vue';
 import { Link } from '@inertiajs/vue3';
@@ -83,25 +83,34 @@ console.log(products);
                 </div>
             </div>
             <div
-                class="grid gap-6 mt-4 px-6 py-6 border-b border-gray-200 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
+                class="grid gap-6 mt-4 px-6 py-6 border-b border-gray-200 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
 
                 <div v-for="product in products.data" :key="product.id" v-bind="$attrs"
                     class="box-content md:box-border rounded-lg bg-white shadow-lg shadow-blue-500/10">
                     <div class="relative">
-                        <div
-                            class="absolute w-full h-full z-10 bg-black opacity-0 hover:opacity-80 transition flex items-center justify-center gap-8 rounded-lg">
-                            <Link :href="`/categories/${product.id}/edit`" class="relative inline-block group">
-                            <button class="text-green-800 cursor-pointer">
-                                <Pencil></Pencil>
-                            </button>
-                            <div
-                                class="absolute hidden group-hover:block bg-gray-700 text-white text-xs rounded py-1 px-2 bottom-full left-1/2 transform -translate-x-1/2 mb-2">
-                                Ubah
-                            </div>
+                        <div class="badge badge-info absolute right-3 top-3 px-2 text-white">{{ product.category?.name }}</div>
+                        <div class="absolute w-full h-full z-10 bg-black opacity-0 hover:opacity-80 transition flex items-center justify-center gap-8 rounded-lg">
+                            <Link :href="route('products.show', {id: product.id})" class="relative inline-block group">
+                                <button class="text-blue-900 cursor-pointer">
+                                    <ReceiptText></ReceiptText>
+                                </button>
+                                <div
+                                    class="absolute hidden group-hover:block bg-gray-700 text-white text-xs rounded py-1 px-2 bottom-full left-1/2 transform -translate-x-1/2 mb-2">
+                                    Lihat
+                                </div>
                             </Link>
-                            <a href="#" @click.prevent="handleModal" :data-url="`/categories/${product.id}/delete`"
+                            <Link :href="`/products/${product.id}/edit`" class="relative inline-block group">
+                                <button class="text-green-900 cursor-pointer">
+                                    <Pencil></Pencil>
+                                </button>
+                                <div
+                                    class="absolute hidden group-hover:block bg-gray-700 text-white text-xs rounded py-1 px-2 bottom-full left-1/2 transform -translate-x-1/2 mb-2">
+                                    Ubah
+                                </div>
+                            </Link>
+                            <a href="#" @click.prevent="handleModal" :data-url="`/products/${product.id}`"
                                 class="relative inline-block group">
-                                <button class="text-red-800 cursor-pointer ">
+                                <button class="text-red-900 cursor-pointer ">
                                     <Trash></Trash>
                                 </button>
                                 <div
@@ -110,18 +119,18 @@ console.log(products);
                                 </div>
                             </a>
                         </div>
-                        <img :src="product.imagePath" alt="" srcset="" class="h-56 w-full object-cover rounded-lg" />
+                        <img :src="product.image_path" class="h-56 w-full object-cover rounded-lg" />
                     </div>
-                    <div class="grid grid-cols-1 justify-items-center p-2">
-                        <h4 class="text-lg font-semibold text-gray-500">{{ product.name }}</h4>
-                        <p class="mt-1 text-sm text-gray-600">{{ product.description }}</p>
+                    <div class="grid grid-cols-1 justify-items-center p-4">
+                        <h4 class="text-lg font-semibold text-gray-700">{{ product.name }}</h4>
+                        <p class="mt-1 text-center text-sm text-gray-500">{{ product.description }}</p>
                     </div>
                 </div>
             </div>
 
             <CustomPaginate :pagination="products.meta" />
 
-            <ModalConfirm :modalData="modalData" @update="modalData.showModal = $event">
+            <ModalConfirm :modalData="modalData" @close-modal="modalData.showModal = false">
                 <div class="grid grid-flow-col grid-rows-1 items-center justify-center gap-2 mb-4">
                     <OctagonAlert></OctagonAlert>
                     <h2 class="font-bold text-xl">Konfirmasi</h2>

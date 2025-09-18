@@ -14,10 +14,17 @@ class CategorySeeder extends Seeder
     public function run(): void
     {
         Category::create([
-            'name' => 'Electronics',
-            'slug' => 'electronics',
-            'description' => 'Electronic gadgets and devices',
-            'image_path' => 'categories/electronics.jpg'
+            'name' => 'Alat listrik',
+            'slug' => 'alat-listrik',
+            'description' => 'peralatan listrik',
+            'image_path' => 'categories/1756988720.jpg'
+        ]);
+        
+        Category::create([
+            'name' => 'Perkakas',
+            'slug' => 'perkakas',
+            'description' => 'perkakas rumah',
+            'image_path' => 'categories/1757153802.jpg'
         ]);
         
     }

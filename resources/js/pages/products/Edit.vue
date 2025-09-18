@@ -9,11 +9,12 @@ import Button from '@/components/ui/button/Button.vue';
 import { ref, onBeforeMount } from 'vue';
 import ModalVariant from '@/pages/variants/ModalForm.vue'
 import { VariantForm } from '../../types/variant';
+import { formatCurrency } from '@/utils/helper';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Products',
-        href: '/products/create',
+        href: '/products/update',
     }
 ]
 
@@ -22,53 +23,62 @@ interface Category {
     name: string
 }
 
-const { categories } = defineProps<{
+const { categories, product } = defineProps<{
     categories: Category[],
+    product: ProductForm
 }>()
+
+const variantData = ref<VariantForm|null>(null)
+const variantIndex = ref<number|null>(null)
+
 const localCategories = ref<Category[]>([...categories])
+const form = useForm<ProductForm>({
+    id: product.id,
+    name: product.name,
+    slug: product.slug,
+    category_id: product.category_id,
+    description: product.description,
+    is_active: true,
+    image: null,
+    image_preview: null,
+    image_path: product.image_path,
+    variants: product.variants,
+    _method:'put'
+});
 
 onBeforeMount(() => {
     localCategories.value.unshift({ id: null, name: 'Pilih kategori' })
 })
-
-const variants = ref<VariantForm[]>([])
-const variantData = ref<VariantForm|null>(null)
-const variantIndex = ref<number|null>(null)
-
-const form = useForm<ProductForm>({
-    id: null,
-    name: '',
-    slug: '',
-    category_id: null,
-    description: '',
-    is_active: true,
-    image: null,
-    image_preview: null,
-    image_path:null,
-    variants: variants.value,
-    _method:'post'
-});
 
 function handleFile(event: Event) {
     const target = event.target as HTMLInputElement;
     if (target.files && target.files.length > 0) {
         form.image = target.files[0];
         form.image_preview = URL.createObjectURL(form.image);
+        form.image_path = null;
     }
 }
 
 function submitForm() {
-    form.post(route('products.store'), {
-        onError:(err) => {
-            console.log(err)
-        },
-        preserveScroll: true,
-    })
+    if(form.id){
+        console.log('data update >>>', form)
+        form.post(route('products.update', {id:form.id}), {
+            forceFormData:true,
+            onSuccess:() => {
+                console.log('suceess')
+            },
+            onError:() => {
+                console.log('failed >>')
+            }
+        })
+    }else{
+        console.log('no product id')
+    }
 }
 
 const showModal = ref<boolean>(false)
 
-const addVariant = (e: VariantForm) =>{
+const addVariant = (e: VariantForm) => {
     console.log('add variant', e)
     form.variants.unshift(e)
     showModal.value = false
@@ -91,7 +101,6 @@ const editVariant = (e: VariantForm, i: number|null) =>{
         }
     }
 
-    
     showModal.value = false
     variantData.value = null 
     variantIndex.value = null
@@ -103,6 +112,8 @@ function handleEditVariant(param:VariantForm, i: number){
     showModal.value = true
 }
 
+
+
 </script>
 
 <template>
@@ -111,7 +122,7 @@ function handleEditVariant(param:VariantForm, i: number){
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex flex-col items-center">
             <div class="lg:w-4xl px-6 py-6">
-                <form @submit.prevent="submitForm" class="space-y-8 divide-y divide-gray-900/10">
+                <form @submit.prevent="submitForm" enctype="multipart/form-data" class="space-y-8 divide-y divide-gray-900/10">
                     <div class="grid gap-4 border-b border-gray-900/10 pb-12">
                         <div class="grid grid-cols-3 gap-3">
                             <div class="grid col-span-2">
@@ -143,10 +154,10 @@ function handleEditVariant(param:VariantForm, i: number){
                             <input type="file" @change="handleFile" name="image" id="image"
                                 :class="{ 'outline-red-300 focus:outline-red-400': form.errors.image }"
                                 class="mt-2 block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-400 sm:text-sm/6" />
-                            <img v-if="form.image_preview" :src="form.image_preview" alt="Image Preview"
-                                class="mt-4 h-24 w-48 object-cover rounded" />
-                            <p class="mt-2 text-sm/6 text-red-600" v-if="form.errors.image">{{ form.errors.image }}
-                            </p>
+                            <img v-if="form.image_preview" :src="form.image_preview" alt="Image Preview" class="mt-4 h-24 w-48 object-cover rounded" />
+                            <img v-if="form.image_path" :src="form.image_path" alt="Image Preview" class="mt-4 h-24 w-48 object-cover rounded">
+                            
+                            <p class="mt-2 text-sm/6 text-red-600" v-if="form.errors.image">{{ form.errors.image }}</p>
                             <progress v-if="form.progress" :value="form.progress.percentage" max="100">
                                 {{ form.progress.percentage }}%
                             </progress>
@@ -159,15 +170,13 @@ function handleEditVariant(param:VariantForm, i: number){
                         </div>
                         <div>
                             <button class="btn btn-outline btn-accent" @click.prevent="showModal = true">Tambah Varian</button>
-                            {{ showModal }}
-                        <p class="mt-2 text-sm/6 text-red-600 ">{{ form.errors.variants }}</p>
+                            <p class="mt-2 text-sm/6 text-red-600 ">{{ form.errors.variants }}</p>
                         </div>
                     </div>
                     <div class="grid grid-cols-3 gap-2" v-if="form.variants.length > 0">
                         <div v-for="(value, i) in form.variants" :key="i">
-                        {{ value }}
                         <button class="btn btn-primary" @click.prevent="handleEditVariant(value,i)">
-                            {{ value.merk }} {{ value.color }} <div class="badge badge-sm badge-accent px-2"> Rp {{ value.price }} </div>
+                            {{ value.merk }} {{ value.color }} <div class="badge badge-sm badge-accent px-2">{{ formatCurrency(value.price) }} </div>
                         </button>
                         </div>
                     </div>
