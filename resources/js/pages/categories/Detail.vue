@@ -3,13 +3,10 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { ProductResource } from '@/types/product';
 import { Head } from '@inertiajs/vue3';
-import { formatCurrency, formatDateTime } from '@/utils/helper';
-import { route } from 'ziggy-js';
-import { Link } from '@inertiajs/vue3';
-import { computed } from 'vue';
 import { CategoryResource } from '@/types/category';
 import List from '../products/List.vue';
 import { Links, Meta } from '@/types/pagination';
+import { formatDateTime } from '@/utils/helper';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {

@@ -16,12 +16,12 @@ const mainNavItems: NavItem[] = [
         icon: LayoutDashboard,
     },
     {
-        title: 'Categories',
+        title: 'Kategori',
         href: '/categories',
         icon: TableProperties,
     },
     {
-        title: 'Products',
+        title: 'Barang',
         href: '/products',
         icon: Package,
     },

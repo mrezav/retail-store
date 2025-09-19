@@ -32,5 +32,7 @@ export interface ProductResource {
     variants: VariantResource[];
     created_at: string;
     updated_at: string;
+    price_min: decimal|null;
+    price_max: decimal|null;
 }
 

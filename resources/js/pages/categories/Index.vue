@@ -15,7 +15,7 @@ import { Links, Meta } from '@/types/pagination';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Categories',
+        title: 'Kategori',
         href: '/categories',
     },
 ];
@@ -61,7 +61,7 @@ function handleModal(event: Event) {
 
 <template>
 
-    <Head title="Categories" />
+    <Head title="Kategori" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="p-2 pb-8">

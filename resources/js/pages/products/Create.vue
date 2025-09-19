@@ -4,7 +4,7 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import { ProductForm } from '@/types/product';
 import { route } from 'ziggy-js';
-import {  Loader2 } from 'lucide-vue-next';
+import { Loader2 } from 'lucide-vue-next';
 import Button from '@/components/ui/button/Button.vue';
 import { ref, onBeforeMount } from 'vue';
 import ModalVariant from '@/pages/variants/ModalForm.vue'
@@ -32,8 +32,8 @@ onBeforeMount(() => {
 })
 
 const variants = ref<VariantForm[]>([])
-const variantData = ref<VariantForm|null>(null)
-const variantIndex = ref<number|null>(null)
+const variantData = ref<VariantForm | null>(null)
+const variantIndex = ref<number | null>(null)
 
 const form = useForm<ProductForm>({
     id: null,
@@ -44,9 +44,9 @@ const form = useForm<ProductForm>({
     is_active: true,
     image: null,
     image_preview: null,
-    image_path:null,
+    image_path: null,
     variants: variants.value,
-    _method:'post'
+    _method: 'post'
 });
 
 function handleFile(event: Event) {
@@ -59,7 +59,7 @@ function handleFile(event: Event) {
 
 function submitForm() {
     form.post(route('products.store'), {
-        onError:(err) => {
+        onError: (err) => {
             console.log(err)
         },
         preserveScroll: true,
@@ -68,36 +68,36 @@ function submitForm() {
 
 const showModal = ref<boolean>(false)
 
-const addVariant = (e: VariantForm) =>{
+const addVariant = (e: VariantForm) => {
     console.log('add variant', e)
     form.variants.unshift(e)
     showModal.value = false
 }
 
-const editVariant = (e: VariantForm, i: number|null) =>{
+const editVariant = (e: VariantForm, i: number | null) => {
     console.log('edit variant', i)
     console.log('edit variant', e)
 
-    if(i !== null){
+    if (i !== null) {
         form.variants[i] = {
-            id:e.id,
-            product_id:e.product_id,
-            merk:e.merk,
-            unit:e.unit,
-            color:e.color,
-            dimension:e.dimension,
-            stock:e.stock,
-            price:e.price
+            id: e.id,
+            product_id: e.product_id,
+            merk: e.merk,
+            unit: e.unit,
+            color: e.color,
+            dimension: e.dimension,
+            stock: e.stock,
+            price: e.price
         }
     }
 
-    
+
     showModal.value = false
-    variantData.value = null 
+    variantData.value = null
     variantIndex.value = null
 }
 
-function handleEditVariant(param:VariantForm, i: number){
+function handleEditVariant(param: VariantForm, i: number) {
     variantData.value = param
     variantIndex.value = i
     showModal.value = true
@@ -115,7 +115,7 @@ function handleEditVariant(param:VariantForm, i: number){
                     <div class="grid gap-4 border-b border-gray-900/10 pb-12">
                         <div class="grid grid-cols-3 gap-3">
                             <div class="grid col-span-2">
-                                <label for="name" class="block text-sm/6 font-medium text-gray-600">Nama Barang</label>
+                                <label for="name" class="block text-sm/6 font-medium text-gray-600">Nama Barang <span class="text-red-500">*</span></label>
                                 <div class="mt-2">
                                     <input v-model="form.name" type="text" name="name" id="name" placeholder="Nama Barang"
                                         :class="{ 'outline-red-300 focus:outline-red-400': form.errors.name }"
@@ -124,18 +124,19 @@ function handleEditVariant(param:VariantForm, i: number){
                                 <p class="mt-2 text-sm text-red-600" v-if="form.errors.name">{{ form.errors.name }}</p>
                             </div>
                             <div>
-                                <label for="category" class="block text-sm/6 font-medium text-gray-600">Kategori</label>
+                                <label for="category" class="block text-sm/6 font-medium text-gray-600">Kategori <span class="text-red-500">*</span></label>
                                 <div class="mt-2">
                                     <select v-model="form.category_id"
                                         :class="{ 'outline-red-300 focus:outline-red-400': form.errors.category_id }"
                                         class="select select-primary text-gray-900 max-h-9 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 outline-gray-300 placeholder:text-gray-300 sm:text-sm/6">
-                                        <!-- <option disabled selected>Pilih kategori</option> -->
                                         <template v-for="category, i in localCategories" :key="i">
-                                            <option :value="category.id" :disabled="!category.id">{{ category.name }}</option>
+                                            <option :value="category.id" :disabled="!category.id">{{ category.name }}
+                                            </option>
                                         </template>
                                     </select>
                                 </div>
-                                <p class="mt-2 text-sm text-red-600" v-if="form.errors.category_id">{{ form.errors.category_id }}</p>
+                                <p class="mt-2 text-sm text-red-600" v-if="form.errors.category_id">{{
+                                    form.errors.category_id }}</p>
                             </div>
                         </div>
                         <div>
@@ -159,16 +160,16 @@ function handleEditVariant(param:VariantForm, i: number){
                         </div>
                         <div>
                             <button class="btn btn-outline btn-accent" @click.prevent="showModal = true">Tambah Varian</button>
-                            {{ showModal }}
-                        <p class="mt-2 text-sm/6 text-red-600 ">{{ form.errors.variants }}</p>
+                            <p class="mt-2 text-sm/6 text-red-600 ">{{ form.errors.variants }}</p>
                         </div>
                     </div>
                     <div class="grid grid-cols-3 gap-2" v-if="form.variants.length > 0">
                         <div v-for="(value, i) in form.variants" :key="i">
-                        {{ value }}
-                        <button class="btn btn-primary" @click.prevent="handleEditVariant(value,i)">
-                            {{ value.merk }} {{ value.color }} <div class="badge badge-sm badge-accent px-2"> Rp {{ value.price }} </div>
-                        </button>
+                            <button class="btn btn-primary" @click.prevent="handleEditVariant(value, i)">
+                                {{ value.merk }} {{ value.color }} <div class="badge badge-sm badge-accent px-2"> Rp {{
+                                    value.price }}
+                                </div>
+                            </button>
                         </div>
                     </div>
 
@@ -189,13 +190,8 @@ function handleEditVariant(param:VariantForm, i: number){
                 </form>
             </div>
         </div>
-        <ModalVariant 
-        :variantData="variantData" 
-        :variantIndex="variantIndex" 
-        :showModal="showModal" 
-        @close="showModal = false"
-        @edit-variant="editVariant"
-        @add-variant="addVariant"/>
+        <ModalVariant :variantData="variantData" :variantIndex="variantIndex" :showModal="showModal"
+            @close="showModal = false" @edit-variant="editVariant" @add-variant="addVariant" />
 
     </AppLayout>
 </template>

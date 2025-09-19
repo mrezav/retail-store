@@ -112,7 +112,12 @@ function handleEditVariant(param:VariantForm, i: number){
     showModal.value = true
 }
 
+function closeModal(){
+    showModal.value = false
+    variantData.value = null 
+    variantIndex.value = null
 
+}
 
 </script>
 
@@ -198,13 +203,12 @@ function handleEditVariant(param:VariantForm, i: number){
                 </form>
             </div>
         </div>
-        <ModalVariant 
-        :variantData="variantData" 
-        :variantIndex="variantIndex" 
-        :showModal="showModal" 
-        @close="showModal = false"
-        @edit-variant="editVariant"
-        @add-variant="addVariant"/>
+        <ModalVariant :variantData="variantData" 
+            :variantIndex="variantIndex" 
+            :showModal="showModal" 
+            @close="closeModal"
+            @edit-variant="editVariant"
+            @add-variant="addVariant"/>
 
     </AppLayout>
 </template>

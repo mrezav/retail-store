@@ -29,6 +29,9 @@ const {products} = defineProps<{
             </thead>
             <tbody>
                 <!-- row 1 -->
+                <tr v-if="products.data.length < 1" class="text-center">
+                    <th colspan="5">Tidak ada barang di kategori ini</th>
+                </tr>
                 <tr v-for="(product, i) in products.data" :key="i">
                     <th>{{ i+1 }}</th>
                     <td>
@@ -58,7 +61,9 @@ const {products} = defineProps<{
                 </tr>
             </tbody>
         </table>
-        <CustomPaginate :pagination="products.meta"></CustomPaginate>
+        <div v-if="products.data.length >= 1">
+            <CustomPaginate :pagination="products.meta"></CustomPaginate>
+        </div>
     </div>
 </template>
 

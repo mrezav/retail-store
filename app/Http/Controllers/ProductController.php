@@ -6,26 +6,38 @@ use Inertia\Inertia;
 use App\Models\Product;
 use App\Models\Variant;
 use App\Models\Category;
+use Illuminate\Support\Arr;
 use illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use App\Http\Resources\ProductResource;
 use App\Http\Resources\CategoryResource;
 use App\Http\Requests\StoreProductRequest;
-use Illuminate\Support\Collection;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::with('category','variants')->latest()->paginate(8);
+        $categories = Category::get(['id','name']); 
+        $products = Product::with('category','variants')
+                        ->when($request->has('filters.keyword'), function($q) use ($request) {
+                            $q->where('name', 'like', '%'. $request->input('filters.keyword').'%');
+                        })
+                        ->when($request->has('filters.category_id'), function($q) use ($request) {
+                            $q->when($request->filled('filters.category_id'), fn($q) => $q->where('category_id', $request->input('filters.category_id')));
+                        })
+                        ->paginate(8)->withQueryString();
+                        
         return Inertia::render('products/Index', [
-            'products' => ProductResource::collection($products)
+            'products' => ProductResource::collection($products),
+            'categories' => $categories,
+            'search' => $request->filters
         ]);
     }
 

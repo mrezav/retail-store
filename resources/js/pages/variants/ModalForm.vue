@@ -7,7 +7,7 @@ import { validation } from '@/utils/variant';
 const { showModal, variantData, variantIndex } = defineProps<{
     showModal: boolean,
     variantData: VariantForm | null,
-    variantIndex: number | null
+    variantIndex: number | null,
 }>()
 
 let variantForm = useForm<VariantForm>({
@@ -38,8 +38,6 @@ function handleAction() {
         stock: variantForm.stock,
         price: variantForm.price,
     }
-
-    console.log('index >>>>', variantIndex)
 
     if (variantData) {
         emit('edit-variant', variant, variantIndex)
@@ -92,7 +90,9 @@ function closeModal() {
         <dialog ref="modalRef" class="modal">
             <form @submit.prevent="handleAction">
                 <div class="modal-box w-11/12 max-w-5xl">
-                    {{ variantForm.errors }}
+                    <div class="mb-4 text-lg font-bold">
+                        Varian Barang
+                    </div>
                     <div class="grid grid-cols-3 gap-4">
                         <div>
                             <label for="merk" class="block text-sm/6 font-medium text-gray-600">Merk/Jenis <span

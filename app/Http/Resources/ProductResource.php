@@ -26,6 +26,8 @@ class ProductResource extends JsonResource
             'variants' => VariantResource::collection($this->whenLoaded('variants')),
             'created_at' => $this->created_at->toDateTimeString(),
             'updated_at' => $this->updated_at->toDateTimeString(),
+            'price_min' => $this->whenLoaded('variants', $this->variants()->min('price')),
+            'price_max' => $this->whenLoaded('variants', $this->variants()->max('price')),
             // 'variant_images' => VariantImageResource::collection($this->whenLoaded('variant_images')),
         ];
     }

@@ -55,7 +55,7 @@ function submitForm() {
                     <div class="grid gap-4 border-b border-gray-900/10 pb-12">
                         <div>
                             <label for="category" class="block text-sm/6 font-medium text-gray-600">Nama
-                                Kategori</label>
+                                Kategori <span class="text-red-500">*</span></label>
                             <div class="mt-2">
                                 <input v-model="form.name" type="text" name="category" id="category" placeholder="Nama Kategori"
                                     :class="{ 'outline-red-300 focus:outline-red-400': form.errors.name }"
