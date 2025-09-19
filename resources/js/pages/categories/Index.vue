@@ -124,7 +124,7 @@ function handleModal(event: Event) {
                         <img :src="category.image_path" alt="" srcset="" class="h-56 w-full object-cover rounded-lg" />
                     </div>
                     <div class="grid grid-cols-1 justify-items-center p-2">
-                        <h4 class="text-lg font-semibold text-gray-500">{{ category.name }}</h4>
+                        <Link :href="route('category.show', { id: category.id })"><h4 class="text-lg font-semibold text-gray-500">{{ category.name }}</h4></Link>
                         <p class="mt-1 text-sm text-gray-600">{{ category.description }}</p>
                     </div>
                 </div>

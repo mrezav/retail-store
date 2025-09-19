@@ -139,7 +139,7 @@ const strLimit = (str:string, limit = 40, end = '...') => str && str.length > li
                                 Lihat
                             </div>
                             </Link>
-                            <Link :href="`/products/${product.id}/edit`" class="relative inline-block group">
+                            <Link :href="route('products.edit', {id: product.id})" class="relative inline-block group">
                             <button class="text-green-900 cursor-pointer">
                                 <Pencil></Pencil>
                             </button>
@@ -162,13 +162,23 @@ const strLimit = (str:string, limit = 40, end = '...') => str && str.length > li
                         <img :src="product.image_path" class="h-56 w-full object-cover rounded-lg" />
                     </div>
                     <div class="grid grid-cols-1 justify-items-center p-4">
-                        <h4 class="text-lg font-semibold text-gray-700">{{ product.name }}</h4>
+                        <Link :href="route('products.show', { id: product.id })"><h4 class="text-lg hover:underline  font-semibold text-gray-700">{{ product.name }}</h4></Link>
                         <p class="mt-1 text-center text-sm text-gray-500">{{ strLimit(product.description) }}</p>
                         <p class="mt-1 text-center text-red-500">{{ formatCurrency(product.price_min) }}  <span v-if="Number(product.price_min) < Number(product.price_max)"> ~ {{ formatCurrency(product.price_max) }} </span></p>
                     </div>
                 </div>
             </div>
             <CustomPaginate :pagination="products.meta" />
+            </template>
+            <template v-else>
+                <div class="grid grid-rows-2 justify-center mt-18">
+                    <div class="grid place-items-center">
+                        <img src="/notfound.png" class="w-40 opacity-60">
+                    </div>
+                    <div class="grid item-center mt-8">
+                        <h3 class="opacity-60 text-2xl font-bold">Barang tidak ditemukan!</h3>
+                    </div>
+                </div>
             </template>
 
             <ModalConfirm :modalData="modalData" @close-modal="modalData.showModal = false">
