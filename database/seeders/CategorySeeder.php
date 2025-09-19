@@ -17,14 +17,14 @@ class CategorySeeder extends Seeder
             'name' => 'Alat listrik',
             'slug' => 'alat-listrik',
             'description' => 'peralatan listrik',
-            'image_path' => 'categories/1756988720.jpg'
+            'image_path' => ''
         ]);
         
         Category::create([
             'name' => 'Perkakas',
             'slug' => 'perkakas',
             'description' => 'perkakas rumah',
-            'image_path' => 'categories/1757153802.jpg'
+            'image_path' => ''
         ]);
         
     }

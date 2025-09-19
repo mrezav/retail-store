@@ -5,7 +5,7 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { Links } from '@/types/pagination';
 import { Meta } from '../../types/pagination';
 import { ProductResource } from '@/types/product';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Check, Pencil, Trash, OctagonAlert, ReceiptText } from 'lucide-vue-next';
 import { Plus, SearchIcon } from 'lucide-vue-next';
 import Button from '@/components/ui/button/Button.vue';

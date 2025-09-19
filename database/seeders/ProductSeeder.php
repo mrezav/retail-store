@@ -19,7 +19,7 @@ class ProductSeeder extends Seeder
             'slug' => 'obeng',
             'description' => 'obeng kualitas bagus',
             'is_active' => true,
-            'image_path' => 'products/obeng.jpg',
+            'image_path' => '',
             'category_id' => 2, // Assuming category with ID 1 exists
         ]);
         Product::create([
@@ -27,7 +27,7 @@ class ProductSeeder extends Seeder
             'slug' => 'stop-kontak',
             'description' => 'stop kontak listrik',
             'is_active' => true,
-            'image_path' => 'products/obeng.jpg',
+            'image_path' => '',
             'category_id' => 1, // Assuming category with ID 1 exists
         ]);
         Product::create([
@@ -35,7 +35,7 @@ class ProductSeeder extends Seeder
             'slug' => 'terminal',
             'description' => 'terminal listrik',
             'is_active' => true,
-            'image_path' => 'products/obeng.jpg',
+            'image_path' => '',
             'category_id' => 1, // Assuming category with ID 1 exists
         ]);
         Product::create([
@@ -43,7 +43,7 @@ class ProductSeeder extends Seeder
             'slug' => 'perkakas',
             'description' => 'Barang ini adalah kumpulan dari perkakas rumah yang sering digunakan sehari-hari untuk kebutuhan perbaikan dan semacamnya.',
             'is_active' => true,
-            'image_path' => 'products/obeng.jpg',
+            'image_path' => '',
             'category_id' => 1, // Assuming category with ID 1 exists
         ]);
     }
