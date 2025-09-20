@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Resources\ProductResource;
 use App\Http\Resources\CategoryResource;
 use App\Http\Requests\StoreProductRequest;
+use App\Http\Resources\VariantResource;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
@@ -24,16 +25,16 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        $categories = Category::get(['id','name']); 
-        $products = Product::with('category','variants')
-                        ->when($request->has('filters.keyword'), function($q) use ($request) {
-                            $q->where('name', 'like', '%'. $request->input('filters.keyword').'%');
-                        })
-                        ->when($request->has('filters.category_id'), function($q) use ($request) {
-                            $q->when($request->filled('filters.category_id'), fn($q) => $q->where('category_id', $request->input('filters.category_id')));
-                        })
-                        ->paginate(8)->withQueryString();
-                        
+        $categories = Category::get(['id', 'name']);
+        $products = Product::with('category', 'variants')
+            ->when($request->has('filters.keyword'), function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->input('filters.keyword') . '%');
+            })
+            ->when($request->has('filters.category_id'), function ($q) use ($request) {
+                $q->when($request->filled('filters.category_id'), fn($q) => $q->where('category_id', $request->input('filters.category_id')));
+            })
+            ->paginate(8)->withQueryString();
+
         return Inertia::render('products/Index', [
             'products' => ProductResource::collection($products),
             'categories' => $categories,
@@ -46,7 +47,7 @@ class ProductController extends Controller
      */
     public function create()
     {
-        $categories = Category::get(['id','name']); 
+        $categories = Category::get(['id', 'name']);
         return Inertia::render('products/Create', ['categories' => $categories]);
     }
 
@@ -55,7 +56,7 @@ class ProductController extends Controller
      */
     public function store(StoreProductRequest $request)
     {
-        $request->validate( [
+        $request->validate([
             'name' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
             'description' => 'nullable|string',
@@ -74,7 +75,7 @@ class ProductController extends Controller
 
         if ($request->hasFile('image')) {
             $file = $request->file('image');
-            $fileName = time().'.'.$file->getClientOriginalExtension();
+            $fileName = time() . '.' . $file->getClientOriginalExtension();
             $imagePath = $file->storeAs('products', $fileName, 'public');
         }
 
@@ -88,7 +89,7 @@ class ProductController extends Controller
             'is_active' => true,
         ]);
 
-        if($request->variants){
+        if ($request->variants) {
             $product->variants()->createMany($request->variants);
         }
 
@@ -98,11 +99,27 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $id, Request $request)
     {
-        $product = Product::with('category','variants')->find($id);
-        // dd(new ProductResource($product));
-        return Inertia::render('products/Detail', ['product' => new ProductResource($product)]);
+        $product = Product::with('category')->find($id);
+        $variants = Variant::where('product_id', $id)
+            ->when($request->has('keyword'), function ($query) use ($request) {
+            $keyword = $request->keyword;
+            $query->where(function ($q) use ($keyword) {
+                // $q->where('merk', 'like', "%{$keyword}%")
+                //     ->orWhere('color', 'like', "%{$keyword}%")
+                //     ->orWhere('dimension', 'like', "%{$keyword}%");
+                $q->where(DB::raw("CONCAT(merk, ' ', color, ' ', dimension)"), 'like', "%{$keyword}%")
+                    ->orWhere(DB::raw("CONCAT(merk, ' ', dimension)"), 'like', "%{$keyword}%");
+            });
+        })
+        ->paginate(8);
+
+        return Inertia::render('products/Detail', [
+            'product' => new ProductResource($product),
+            'variants' => VariantResource::collection($variants),
+            'search' => $request->keyword
+        ]);
     }
 
     /**
@@ -110,10 +127,10 @@ class ProductController extends Controller
      */
     public function edit(string $id)
     {
-        $categories = Category::get(['id','name']);
+        $categories = Category::get(['id', 'name']);
         // $product = Product::with('variants')->where('id', $id)->get();
-        $product= new ProductResource(Product::findorfail($id)->load('variants'));
-        return Inertia::render('products/Edit', ['categories'=>$categories, 'product' => $product]);
+        $product = new ProductResource(Product::findorfail($id)->load('variants'));
+        return Inertia::render('products/Edit', ['categories' => $categories, 'product' => $product]);
     }
 
     /**
@@ -121,7 +138,7 @@ class ProductController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $request->validate( [
+        $request->validate([
             'name' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
             'description' => 'nullable|string',
@@ -131,7 +148,7 @@ class ProductController extends Controller
 
         if ($request->hasFile('image')) {
             $file = $request->file('image');
-            $fileName = time().'.'.$file->getClientOriginalExtension();
+            $fileName = time() . '.' . $file->getClientOriginalExtension();
             $imagePath = $file->storeAs('products', $fileName, 'public');
         }
 
@@ -146,15 +163,15 @@ class ProductController extends Controller
             'is_active' => true,
         ]);
 
-        if($request->variants){
+        if ($request->variants) {
             $variants = Variant::where('product_id', $id)->get();
-            
+
             $new_variant = [];
             $ids = [];
-            foreach($request->variants as $variant_req){
-                if($variant_req['id'] != null){
-                    $variants->transform(function($val) use ($variant_req){
-                        if($variant_req['id'] == $val->id){
+            foreach ($request->variants as $variant_req) {
+                if ($variant_req['id'] != null) {
+                    $variants->transform(function ($val) use ($variant_req) {
+                        if ($variant_req['id'] == $val->id) {
                             $val->merk = $variant_req['merk'];
                             $val->color = $variant_req['color'];
                             $val->unit = $variant_req['unit'];
@@ -164,36 +181,36 @@ class ProductController extends Controller
                         }
                         return $val;
                     });
-                    array_push($ids, $variant_req['id']);    
-                }else{
+                    array_push($ids, $variant_req['id']);
+                } else {
                     array_push($new_variant, $variant_req);
                 }
             }
 
             $sql = "UPDATE variants SET merk = CASE id ";
-                foreach($variants as $variant){
-                    $sql .= " WHEN {$variant['id']} THEN ". DB::getPdo()->quote($variant->merk);
-                }
+            foreach ($variants as $variant) {
+                $sql .= " WHEN {$variant['id']} THEN " . DB::getPdo()->quote($variant->merk);
+            }
             $sql .= " END, color = CASE id ";
-                foreach($variants as $variant){
-                    $sql .= " WHEN {$variant['id']} THEN ". DB::getPdo()->quote($variant->color);
-                }
+            foreach ($variants as $variant) {
+                $sql .= " WHEN {$variant['id']} THEN " . DB::getPdo()->quote($variant->color);
+            }
             $sql .= " END, unit = CASE id ";
-                foreach($variants as $variant){
-                    $sql .= " WHEN {$variant['id']} THEN ". DB::getPdo()->quote($variant->unit);
-                }
+            foreach ($variants as $variant) {
+                $sql .= " WHEN {$variant['id']} THEN " . DB::getPdo()->quote($variant->unit);
+            }
             $sql .= " END, dimension = CASE id ";
-                foreach($variants as $variant){
-                    $sql .= " WHEN {$variant['id']} THEN ". DB::getPdo()->quote($variant->dimension);
-                }
+            foreach ($variants as $variant) {
+                $sql .= " WHEN {$variant['id']} THEN " . DB::getPdo()->quote($variant->dimension);
+            }
             $sql .= " END, stock = CASE id ";
-                foreach($variants as $variant){
-                    $sql .= " WHEN {$variant['id']} THEN ". DB::getPdo()->quote($variant->stock);
-                }
+            foreach ($variants as $variant) {
+                $sql .= " WHEN {$variant['id']} THEN " . DB::getPdo()->quote($variant->stock);
+            }
             $sql .= " END, price = CASE id ";
-                foreach($variants as $variant){
-                    $sql .= " WHEN {$variant['id']} THEN ". DB::getPdo()->quote($variant->price);
-                }
+            foreach ($variants as $variant) {
+                $sql .= " WHEN {$variant['id']} THEN " . DB::getPdo()->quote($variant->price);
+            }
 
             $sql .= " END WHERE id IN (" . implode(',', $ids) . ")";
 

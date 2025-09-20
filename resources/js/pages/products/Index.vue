@@ -2,8 +2,7 @@
 import { BreadcrumbItem } from '@/types';
 import { Head, router, usePage } from '@inertiajs/vue3';
 import AppLayout from '@/layouts/AppLayout.vue';
-import { Links } from '@/types/pagination';
-import { Meta } from '../../types/pagination';
+import { Links, Meta } from '@/types/pagination';
 import { ProductResource } from '@/types/product';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Check, Pencil, Trash, OctagonAlert, ReceiptText } from 'lucide-vue-next';
@@ -76,9 +75,9 @@ const filters = reactive<FilterType>({
 })
 
 
-const debouceKeyword = useDebounce(computed(() => ({...filters})), 400);
+const debounce = useDebounce(computed(() => ({...filters})), 400);
 watch(
-    debouceKeyword,
+    debounce,
     () => router.get('/products', {filters: filters}, {preserveState:true, replace:true}),
     {deep:true}
 )

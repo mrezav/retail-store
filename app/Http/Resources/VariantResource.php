@@ -25,6 +25,8 @@ class VariantResource extends JsonResource
             'stock' => $this->stock,
             'dimension' => $this->dimension,
             'unit' => $this->unit,
+            'product' => $this->whenLoaded('product'),
+            'image_path' => $this->image_path ? asset('storage/' . $this->image_path) : asset($this->product->image_path)
             // 'variant_images' => VariantImageResource::collection($this->whenLoaded('variant_images'))
         ];
     }

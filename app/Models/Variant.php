@@ -14,10 +14,11 @@ class Variant extends Model
     protected $fillable = [
         'product_id',
         'merk',
-        'unit',
         'color',
         'dimension',
+        'image_path',
         'stock',
+        'unit',
         'price',
     ];
 
