@@ -44,14 +44,12 @@ if (flash && flash.message) {
     }, 3000);
 }
 
-const { search, categories, products, variants } = defineProps<{
+const { search, products, variants } = defineProps<{
     search: FilterType | null,
-    categories: { id: number | null, name: string }[],
     products: { id: number | null, name: string }[],
     variants: Response
 }>();
 
-// const localCategories = ref<{ id: number | null, name: string }[]>([{ id: null, name: 'Pilih Kategori' }, ...categories,])
 const localProducts = ref<{ id: number | null, name: string }[]>([{ id: null, name: 'Pilih Barang' }, ...products])
 
 const filters = reactive<FilterType>({
@@ -68,6 +66,14 @@ watch(debounce,
     { deep: true }
 )
 
+function numberList(i:number){
+    if (variants.data.length > 0){
+        const currentPage = variants.meta.current_page;
+        const perPage = variants.meta.per_page;
+
+        return i + ((currentPage -1) * perPage)
+    }
+}
 
 </script>
 
@@ -88,11 +94,6 @@ watch(debounce,
                     </Alert>
                 </div>
                 <div class="flex justify-end col-span-2">
-                    <!-- <select v-model="filters.category_id" class="select select-accent border-2 border-green-200 mr-2">
-                        <template v-for="category in localCategories" :key="category.id">
-                            <option :value="category.id">{{ category.name }}</option>
-                        </template>
-                    </select> -->
                     <select v-model="filters.product_id" class="select select-accent border-2 border-green-200 mr-2">
                         <template v-for="product in localProducts" :key="product.id">
                             <option :value="product.id">{{ product.name }}</option>
@@ -111,11 +112,11 @@ watch(debounce,
                 </div>
             </div>
             <div v-if="variants.data.length > 0" class="mx-6">
-                <table class="table bg-gray-50">
+                <table class="table table-zebra bg-gray-50">
                     <!-- head -->
                     <thead>
-                        <tr>
-                            <th>#</th>
+                        <tr class="font-bold text-gray-700 bg-teal-200">
+                            <th class="w-16">#</th>
                             <th>Nama Barang</th>
                             <th>Merk/Jenis</th>
                             <th>Warna</th>
@@ -127,7 +128,7 @@ watch(debounce,
                     <tbody>
                         <template v-for="(variant, i) in variants.data" :key="i">
                             <tr>
-                                <td>{{ i + 1 }}</td>
+                                <td>{{ numberList(i + 1) }}</td>
                                 <td>{{ variant.product?.name }}</td>
                                 <td>{{ variant.merk }}</td>
                                 <td>{{ variant.color }}</td>

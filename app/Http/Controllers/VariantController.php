@@ -17,28 +17,27 @@ class VariantController extends Controller
      */
     public function index(Request $request)
     {
-        // $categories = Category::select('id','name')->get();
-        $products = Product::select('id', 'name')
-                    ->when($request->filled('filters.category_id'), function($query) use ($request) {
-                        $query->where('category_id', $request->filters['category_id']);
-                    })
-                    ->get();
-        $variants = Variant::with('product')
-                ->when($request->has('filters.product_id'), function($q) use ($request) { 
-                    $q->when($request->filled('filters.product_id'), fn($q) => $q->where('product_id', $request->input('filters.product_id')));
-                })
-                ->when($request->has('filters.keyword'), function($query) use ($request) {
-                    $query->when($request->filled('filters.keyword'), function($q) use ($request){
-                        $keyword = $request->input('filters.keyword');
-                        $q->where(DB::raw("CONCAT(merk, ' ', color, ' ', dimension)"), 'like', "%{$keyword}%")
-                            ->orWhere(DB::raw("CONCAT(merk, ' ', dimension)"), 'like', "%{$keyword}%");
-                    });
-                })
-                // ->toSql();
-                ->paginate(10)->withQueryString();
+        $products = Product::select('id', 'name')->get();
+        $keyword = $request->input('filters.keyword');
+        $variants = Variant::query()
+            ->join('products', 'products.id', '=', 'variants.product_id')
+            ->when($request->filled('filters.product_id'), fn($q) => $q->where('products.id', $request->input('filters.product_id')))
+            ->where(function ($q) use ($keyword) {
+                $q->whereRaw("CONCAT_WS(' ', products.name, variants.merk, variants.color, variants.dimension) LIKE ?", ["%{$keyword}%"])
+                    ->orWhereRaw("CONCAT_WS(' ', products.name, variants.merk, variants.dimension) LIKE ?", ["%{$keyword}%"])
+                    ->orWhereRaw("CONCAT_WS(' ', products.name, variants.color) LIKE ?", ["%{$keyword}%"])
+                    ->orWhereRaw("CONCAT_WS(' ', products.name, variants.dimension) LIKE ?", ["%{$keyword}%"])
+                    ->orWhereRaw("CONCAT_WS(' ', products.name, variants.color, variants.dimension) LIKE ?", ["%{$keyword}%"])
+                    ->orWhereRaw("CONCAT_WS(' ', variants.merk, variants.color, variants.dimension) LIKE ?", ["%{$keyword}%"])
+                    ->orWhereRaw("CONCAT_WS(' ', variants.merk, variants.dimension) LIKE ?", ["%{$keyword}%"]);
+            })
+            ->select('variants.*')   // penting: supaya Eloquent tahu primary key
+            ->with('product')        // akan execute query terpisah untuk eager load
+        ->paginate(10)->withQueryString();
+        // $variants = vsprintf(str_replace('?', "'%s'", $variants->toSql()), $variants->getBindings());
+        // ->toSql();
         // dd($variants);
-        return Inertia::render('variants/Index',[
-            // 'categories' => $categories,
+        return Inertia::render('variants/Index', [
             'products' => $products,
             'variants' => VariantResource::collection($variants),
             'search' => $request->filters,

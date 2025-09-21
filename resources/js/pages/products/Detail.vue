@@ -161,7 +161,6 @@ watch(
                         </label>
                     </div>
                 </div>
-                {{ keyword }}
                 <template v-if="variants.data.length > 0">
                 <div class="grid grid-cols-4 justify-items-start gap-4">
                     <template v-for="variant in variants.data" :key="variant.id">
