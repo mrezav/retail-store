@@ -4,9 +4,8 @@ import { type BreadcrumbItem } from '@/types';
 import { Head, useForm, Link } from '@inertiajs/vue3';
 import { Loader2 } from 'lucide-vue-next';
 import Button from '@/components/ui/button/Button.vue';
-import { VariantForm } from '@/types/variant';
+import { VariantForm, VariantResource } from '@/types/variant';
 import { route } from 'ziggy-js';
-import { variantDefaultForm } from '@/utils/variant';
 import { ref } from 'vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -21,18 +20,43 @@ interface ProductType {
     name: string,
 }
 
-const { products } = defineProps<{ products: ProductType[] }>()
+const { products, variant } = defineProps<{ products: ProductType[], variant: VariantResource }>()
 const localProducts = ref<ProductType[]>([{ id: null, name: "Pilih Produk" }, ...products])
-
+console.log(variant);
+console.log(products);
 
 const form = useForm<VariantForm>(
-    variantDefaultForm('post')
+    {
+        id: variant.id,
+        product_id:variant.product_id,
+        merk:variant.merk,
+        unit:variant.unit,
+        color:variant.color,
+        dimension:variant.dimension,
+        stock:variant.stock,
+        price:variant.price,
+        description:variant.description,
+        image: null,
+        image_path: variant.image_path,
+        image_preview: null,
+        _method: 'put',
+    }
 )
 
 function submitForm() {
-    form.post(route('variants.store'),{
-        onError:(e) => console.log(e),
-    })
+    if(form.id){
+        form.post(route('variants.update', {id:form.id}), {
+            forceFormData:true,
+            onSuccess:() => {
+                console.log('suceess')
+            },
+            onError:(e) => {
+                console.log('failed >>', e)
+            }
+        })
+    }else{
+        console.log('no variant id')
+    }
 }
 
 function handleFile(e:Event) {
@@ -40,6 +64,7 @@ function handleFile(e:Event) {
     if(target.files && target.files.length > 0){
         form.image = target.files[0]
         form.image_preview = URL.createObjectURL(form.image)
+        form.image_path = null
     }
 }
 </script>
@@ -51,9 +76,6 @@ function handleFile(e:Event) {
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex flex-col items-center">
             <div class="lg:w-4xl px-6 py-6">
-                <div>
-
-                </div>
                 <form @submit.prevent="submitForm">
                     <div class="grid gap-6 border-b border-gray-900/10 pb-12">
                         <div class="grid grid-cols-2 gap-4">
@@ -128,14 +150,14 @@ function handleFile(e:Event) {
                             </div>
                         </div>
                         <div>
-                            <label for="image" class="block text-sm/6 font-medium text-gray-600">Gambar</label>
+                           <label for="image" class="block text-sm/6 font-medium text-gray-600">Gambar</label>
                             <input type="file" @change="handleFile" name="image" id="image"
                                 :class="{ 'outline-red-300 focus:outline-red-400': form.errors.image }"
                                 class="mt-2 block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-400 sm:text-sm/6" />
-                            <img v-if="form.image_preview" :src="form.image_preview" alt="Image Preview"
-                                class="mt-4 h-24 w-48 object-cover rounded" />
-                            <p class="mt-2 text-sm/6 text-red-600" v-if="form.errors.image">{{ form.errors.image }}
-                            </p>
+                            <img v-if="form.image_preview" :src="form.image_preview" alt="Image Preview" class="mt-4 h-24 w-48 object-cover rounded" />
+                            <img v-if="form.image_path" :src="form.image_path" alt="Image Preview" class="mt-4 h-24 w-48 object-cover rounded">
+                            
+                            <p class="mt-2 text-sm/6 text-red-600" v-if="form.errors.image">{{ form.errors.image }}</p>
                             <progress v-if="form.progress" :value="form.progress.percentage" max="100">
                                 {{ form.progress.percentage }}%
                             </progress>

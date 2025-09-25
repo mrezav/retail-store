@@ -24,7 +24,6 @@ return new class extends Migration
             $table->string('dimension')->nullable();
             $table->integer('stock')->default(0);
             $table->decimal('price', 10, 2);
-            $table->softDeletes();
             $table->timestamps();
         });
     }

@@ -2,6 +2,8 @@
 import CustomPaginate from '@/components/custom/CustomPaginate.vue';
 import { Links, Meta } from '@/types/pagination';
 import { ProductResource } from '@/types/product';
+import { ref } from 'vue';
+import ModalZoomImage from '@/components/custom/ModalZoomImage.vue';
 
 interface Response {
     data: ProductResource[],
@@ -9,9 +11,16 @@ interface Response {
     meta: Meta,
 }
 
-const {products} = defineProps<{
+const { products } = defineProps<{
     products: Response
 }>()
+
+const isZoom = ref<boolean>(false)
+const sourceImage = ref<string|null>()
+function imageZoom(source: string|null){
+    isZoom.value = true
+    sourceImage.value = source
+}
 </script>
 
 <template>
@@ -21,10 +30,10 @@ const {products} = defineProps<{
             <thead>
                 <tr>
                     <th>#</th>
-                    <th>Gambar</th>
+                    <th class="text-center">Gambar</th>
                     <th>Nama</th>
                     <th>Keterangan</th>
-                    <th>Varian</th>
+                    <th class="w-2/6">Varian</th>
                 </tr>
             </thead>
             <tbody>
@@ -33,22 +42,22 @@ const {products} = defineProps<{
                     <th colspan="5">Tidak ada barang di kategori ini</th>
                 </tr>
                 <tr v-for="(product, i) in products.data" :key="i">
-                    <th>{{ i+1 }}</th>
+                    <th>{{ i + 1 }}</th>
                     <td>
-                        <div class="flex items-center gap-3">
+                        <div class="flex items-center justify-center gap-3">
                             <div class="avatar">
                                 <div class="h-24 w-28">
-                                    <img :src="product.image_path"
-                                        alt="Avatar Tailwind CSS Component" />
+                                    <img :src="product.image_path" @click="imageZoom(product.image_path)" alt="image preview" 
+                                        class="w-auto h-auto max-w-full mx-auto my-auto cursor-pointer" />
                                 </div>
                             </div>
-                            
+
                         </div>
                     </td>
                     <td>
                         <div>
-                                <div class="text-lg">{{ product.name }}</div>
-                            </div>
+                            <div class="text-lg">{{ product.name }}</div>
+                        </div>
                     </td>
                     <td>
                         {{ product.description }}
@@ -64,6 +73,9 @@ const {products} = defineProps<{
         <div v-if="products.data.length >= 1">
             <CustomPaginate :pagination="products.meta"></CustomPaginate>
         </div>
+        <ModalZoomImage :is-zoom="isZoom" @close-modal="isZoom=false">
+            <img :src="sourceImage??undefined"  alt="gambar" class="w-auto h-auto max-w-full mx-auto"/>
+        </ModalZoomImage>
     </div>
 </template>
 

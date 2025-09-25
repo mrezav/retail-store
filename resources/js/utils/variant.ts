@@ -31,3 +31,21 @@ export function validation(params: InertiaForm<VariantForm>): InertiaForm<Varian
 
     return params
 }
+
+export function variantDefaultForm(method: string = ''): VariantForm{
+    return {
+        id: null,
+        product_id: null,
+        merk: '',
+        unit: '',
+        color: '',
+        dimension: '',
+        stock: 0,
+        price: 0,
+        description:'',
+        image: null,
+        image_path: '',
+        image_preview: null,
+        _method: method ?? null,
+    }
+}

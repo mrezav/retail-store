@@ -5,10 +5,15 @@ export interface VariantForm{
     product_id: number | null,
     merk:string,
     unit: string,
-    color: string,
+    color: string | null,
     dimension: string,
     stock: number,
-    price: decimal
+    price: decimal,
+    description: string | null,
+    image: File | null;
+    image_preview: string | null;
+    image_path: string | null;
+    _method:string | null;
 }
 
 export interface VariantResource{
@@ -17,9 +22,13 @@ export interface VariantResource{
     merk:string,
     color: string |null,
     dimension: string,
-    image_path: string |null,
     unit: string,
     stock: number,
     price: decimal,
     product: ProductResource
+    description: string | null;
+    image: File | null;
+    image_preview: string | null;
+    image_path: string | null;
+    _method:string | null;
 }

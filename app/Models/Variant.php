@@ -4,12 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Variant extends Model
 {
-    use SoftDeletes;
+
+    protected $table = 'variants';
 
     protected $fillable = [
         'product_id',
@@ -20,6 +19,7 @@ class Variant extends Model
         'stock',
         'unit',
         'price',
+        'description',
     ];
 
     public function product(): BelongsTo

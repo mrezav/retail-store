@@ -87,7 +87,12 @@ const editVariant = (e: VariantForm, i: number | null) => {
             color: e.color,
             dimension: e.dimension,
             stock: e.stock,
-            price: e.price
+            price: e.price,
+            description: e.description,
+            image: e.image,
+            image_path:e.image_path,
+            image_preview:e.image_preview,
+            _method:e._method
         }
     }
 

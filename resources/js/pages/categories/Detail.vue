@@ -7,6 +7,8 @@ import { CategoryResource } from '@/types/category';
 import List from '../products/List.vue';
 import { Links, Meta } from '@/types/pagination';
 import { formatDateTime } from '@/utils/helper';
+import ModalZoomImage from '@/components/custom/ModalZoomImage.vue';
+import { ref } from 'vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -23,6 +25,12 @@ interface Response {
 
 const { category, products } = defineProps<{ category: CategoryResource, products: Response }>()
 
+const isZoom = ref<boolean>(false)
+const sourceImage = ref<string|null>()
+function imageZoom(source: string|null){
+    isZoom.value = true
+    sourceImage.value = source
+}
 </script>
 
 <template>
@@ -34,7 +42,7 @@ const { category, products } = defineProps<{ category: CategoryResource, product
             <div class="w-9/10 mt-4 mb-6">
                 <div class="grid grid-cols-3 gap-4 my-2">
                     <div class="box-content md:box-border w-full rounded-lg bg-white shadow-lg shadow-blue-500/10">
-                        <img :src="category.image_path" alt="image preview" class="aspect-4/3 object-fit">
+                        <img :src="category.image_path" @click="imageZoom(category.image_path)" alt="image preview" class="w-auto h-auto max-w-full mx-auto my-auto cursor-pointer">
                     </div>
                     <div class="grid col-span-2 justify-items-start">
                         <div class="overflow-x-auto">
@@ -61,7 +69,9 @@ const { category, products } = defineProps<{ category: CategoryResource, product
                         </div>
                     </div>
                 </div>
-
+                <ModalZoomImage :is-zoom="isZoom" @close-modal="isZoom=false">
+                    <img :src="sourceImage??undefined"  alt="gambar" class="w-auto h-auto max-w-full mx-auto"/>
+                </ModalZoomImage>
                 <List :products="products"></List>
             </div>
         </div>
