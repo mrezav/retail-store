@@ -68,6 +68,7 @@ class ProductController extends Controller
         //     // throw new HttpException(400, 'salah input data');
         // }
 
+        $imagePath = null;
         if ($request->hasFile('image')) {
             $file = $request->file('image');
             $fileName = time() . '.' . $file->getClientOriginalExtension();
@@ -135,6 +136,7 @@ class ProductController extends Controller
     {
         $request->validate([]);
 
+        $imagePath = null;
         if ($request->hasFile('image')) {
             $file = $request->file('image');
             $fileName = time() . '.' . $file->getClientOriginalExtension();

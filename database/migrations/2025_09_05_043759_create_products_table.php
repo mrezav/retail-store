@@ -22,7 +22,7 @@ return new class extends Migration
                 column:'id',
                 indexName:'products_category_id'
             )->onDelete('cascade');
-            $table->string('image_path');
+            $table->string('image_path')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

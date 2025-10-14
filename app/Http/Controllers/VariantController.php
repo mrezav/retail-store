@@ -155,8 +155,10 @@ class VariantController extends Controller
     public function destroy(string $id)
     {
         $variant = Variant::findorfail($id);
-        if (Storage::disk('public')->exists($variant->image_path)) {
-            Storage::disk('public')->delete($variant->image_path);
+        if($variant->image_path){
+            if (Storage::disk('public')->exists($variant->image_path)) {
+                Storage::disk('public')->delete($variant->image_path);
+            }
         }
         // $filePath = public_path($imagePath);
         // if (file_exists($filePath)) {
