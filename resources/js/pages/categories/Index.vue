@@ -121,7 +121,15 @@ function handleModal(event: Event) {
                                 </div>
                             </a>
                         </div>
-                        <img :src="category.image_path" alt="" srcset="" class="h-56 w-full object-cover rounded-lg" />
+                        <template v-if="category.image_path">
+                            <img :src="category.image_path" alt="" srcset="" class="h-56 w-full object-cover rounded-lg" />
+                        </template>
+                        <template v-else>
+                            <div class="flex items-center justify-center h-56 bg-gray-100 rounded-lg">
+                                <span class="text-gray-400 italic">No Image Available</span>
+                            </div>
+                        </template>
+                        <!-- <img :src="category.image_path" alt="" srcset="" class="h-56 w-full object-cover rounded-lg" /> -->
                     </div>
                     <div class="grid grid-cols-1 justify-items-center p-2">
                         <Link :href="route('categories.show', { id: category.id })"><h4 class="text-lg font-semibold text-gray-500">{{ category.name }}</h4></Link>

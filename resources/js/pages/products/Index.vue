@@ -158,7 +158,14 @@ const strLimit = (str:string, limit = 40, end = '...') => str && str.length > li
                                 </div>
                             </a>
                         </div>
-                        <img :src="product.image_path" class="h-56 w-full object-cover rounded-lg" />
+                        <template v-if="product.image_path == '' || product.image_path == null">
+                            <div class="flex items-center justify-center h-56 bg-gray-100 rounded-lg">
+                                <span class="text-gray-400 italic">No Image Available</span>
+                            </div>
+                        </template>
+                        <template v-else>
+                            <img :src="product.image_path" class="h-56 w-full object-cover rounded-lg" />
+                        </template>
                     </div>
                     <div class="grid grid-cols-1 justify-items-center p-4">
                         <Link :href="route('products.show', { id: product.id })"><h4 class="text-lg hover:underline  font-semibold text-gray-700">{{ product.name }}</h4></Link>

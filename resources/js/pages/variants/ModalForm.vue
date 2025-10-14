@@ -90,7 +90,6 @@ function closeModal() {
                     <div class="mb-4 text-lg font-bold">
                         Varian Barang
                     </div>
-                    {{ variantData }}
                     <div class="grid grid-cols-3 gap-4">
                         <div>
                             <label for="merk" class="block text-sm/6 font-medium text-gray-600">Merk/Jenis <span

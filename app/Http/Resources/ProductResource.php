@@ -20,7 +20,7 @@ class ProductResource extends JsonResource
             'slug' => $this->slug,
             'description' => $this->description,
             'is_active' => $this->is_active,
-            'image_path' => $this->image_path ? asset('storage/' . $this->image_path) : asset('storage/products/default.jpg'),
+            'image_path' => $this->image_path ? asset('storage/' . $this->image_path) : "",
             'category' => new CategoryResource($this->whenLoaded('category')),
             'category_id' => $this->category_id,
             'variants' => VariantResource::collection($this->whenLoaded('variants')),

@@ -4,7 +4,7 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { Link, Head, router, usePage } from '@inertiajs/vue3';
 import { computed, reactive, ref, watch } from 'vue';
 import { route } from 'ziggy-js'
-import { Plus, Check, Trash, SquarePen, OctagonAlert, ZoomIn } from 'lucide-vue-next';
+import { Plus, Check, Trash, SquarePen, OctagonAlert } from 'lucide-vue-next';
 import Button from '@/components/ui/button/Button.vue';
 import { useDebounce } from '@vueuse/core';
 import { SearchIcon } from 'lucide-vue-next';
@@ -21,6 +21,8 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/variants',
     },
 ];
+
+// const baseUrl = window.location.origin;
 
 interface FilterType {
     keyword: string,
@@ -183,8 +185,15 @@ function imageZoom(source: string|null){
                                     <template v-if="variant.image_path != '' && variant.image_path != undefined">
                                         <img :src="variant.image_path" @click="imageZoom(variant.image_path)" class="w-26 h-auto rounded-lg object-fit cursor-pointer"/>
                                     </template>
-                                    <img v-else src="/images.jpg" @click="imageZoom('/images.jpg')" class="w-26 h-auto rounded-lg object-fit cursor-pointer"/>
-                                    
+                                    <template v-else-if="variant.product?.image_path">
+                                        <img :src="variant.product?.image_path" @click="imageZoom(variant.product?.image_path)" class="w-26 h-auto rounded-lg object-fit cursor-pointer"/>
+                                    </template>
+                                    <template v-else>
+                                        <!-- <img src="/images.jpg" @click="imageZoom('/images.jpg')" class="w-26 h-auto rounded-lg object-fit cursor-pointer"/> -->
+                                        <div class="w-26 h-20 bg-gray-200 flex items-center justify-center rounded-lg">
+                                            <span class="text-gray-500">No Image</span>
+                                        </div>
+                                    </template>
                                     <span class="font-bold text-gray-400 mt-2">{{ variant.product?.name }}</span>
                                 </td>
                                 <td class="font-bold text-gray-500">{{ variant.merk }}</td>
@@ -234,16 +243,16 @@ function imageZoom(source: string|null){
         </div>
 
         <dialog id="zoom_image" ref="modalImageRef" class="modal">
-        <div class="modal-box w-8/12 max-w-5xl">
-            <img :src="sourceImage??undefined"  alt="gambar" class="w-auto h-auto max-w-full mx-auto">
-        </div>
-        <form method="dialog" class="modal-backdrop">
-            <button>close</button>
-        </form>
+            <div class="modal-box w-auto max-w-none max-w-[60vw] max-h-[80vh] overflow-auto p-4">
+                <img :src="sourceImage??undefined" class="object-contain rounded-lg" />
+            </div>
+            <form method="dialog" class="modal-backdrop">
+                <button>close</button>
+            </form>
         </dialog>
 
         <ModalConfirm :modalData="modalData" @close-modal="modalData.showModal = false">
-            <div class="grid grid-flow-col grid-rows-1   gap-2 mb-4">
+            <div class="grid grid-flow-col grid-rows-1 gap-2 mb-4">
                 <OctagonAlert></OctagonAlert>
                 <h2 class="font-bold text-xl">Konfirmasi</h2>
             </div>

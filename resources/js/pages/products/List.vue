@@ -4,6 +4,8 @@ import { Links, Meta } from '@/types/pagination';
 import { ProductResource } from '@/types/product';
 import { ref } from 'vue';
 import ModalZoomImage from '@/components/custom/ModalZoomImage.vue';
+import { Link } from '@inertiajs/vue3';
+import { route } from 'ziggy-js';
 
 interface Response {
     data: ProductResource[],
@@ -56,7 +58,11 @@ function imageZoom(source: string|null){
                     </td>
                     <td>
                         <div>
-                            <div class="text-lg">{{ product.name }}</div>
+                            <div class="font-bold text-blue-700">
+                                <Link :href="route('products.show', product.id)" class="hover:underline">
+                                    {{ product.name }}
+                                </Link>
+                            </div>
                         </div>
                     </td>
                     <td>

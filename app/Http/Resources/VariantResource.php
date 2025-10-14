@@ -24,9 +24,10 @@ class VariantResource extends JsonResource
             'stock' => $this->stock,
             'dimension' => $this->dimension,
             'unit' => $this->unit,
-            'product' => $this->whenLoaded('product'),
+            'product' => new ProductResource($this->whenLoaded('product')),
             'description' => $this->description,
-            'image_path' => $this->image_path ? asset('storage/' . $this->image_path) : ($this->whenLoaded('product') ? ($this->product->image_path ? asset('storage/' . $this->product->image_path) : "") : ""),
+            // 'image_path' => $this->image_path ? asset('storage/' . $this->image_path) : ($this->whenLoaded('product') ? ($this->product->image_path ? asset('storage/' . $this->product->image_path) : "") : ""),
+            'image_path' => $this->image_path ? asset('storage/' . $this->image_path) : "",
             // 'variant_images' => VariantImageResource::collection($this->whenLoaded('variant_images'))
         ];
     }

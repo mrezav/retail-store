@@ -17,7 +17,7 @@ const emit = defineEmits<{
 
 <template>
     <dialog id="zoom_image" ref="modalImageRef" class="modal">
-        <div class="modal-box w-8/12 max-w-5xl">
+        <div class="modal-box w-auto max-w-none max-w-[60vw] max-h-[80vh] overflow-auto p-4">
             <slot></slot>
         </div>
         <form method="dialog" class="modal-backdrop">

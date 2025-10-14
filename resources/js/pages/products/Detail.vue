@@ -174,6 +174,21 @@ function imageZoom(source: string | null) {
                                 <table class="table table-zebra table-sm">
                                     <tbody>
                                         <tr>
+                                            <th colspan="2" class="place-items-center">
+                                                <template v-if="variant.image_path">
+                                                    <img :src="variant.image_path" alt="variant"
+                                                        class="w-full max-h-40 max-w-full object-cover mb-2">
+                                                </template>
+                                                <template v-else>
+                                                    <div
+                                                        class="w-full h-40 bg-gray-200 flex items-center justify-center mb-2">
+                                                        <span class="text-gray-500">No Image</span>
+                                                    </div>
+
+                                                </template>
+                                            </th>
+                                        </tr>
+                                        <tr>
                                             <th class="font-semibold opacity-60">Merk/Jenis</th>
                                             <td class="font-bold text-blue-700">{{ capitalize(variant.merk) }}</td>
                                         </tr>
@@ -215,8 +230,8 @@ function imageZoom(source: string | null) {
                     </div>
                 </div>
                 <dialog id="zoom_image" ref="modalImageRef" class="modal">
-                    <div class="modal-box w-8/12 max-w-5xl">
-                        <img :src="sourceImage ?? undefined" alt="gambar" class="w-auto h-auto max-w-full mx-auto">
+                    <div class="modal-box w-auto max-w-none max-w-[60vw] max-h-[80vh] overflow-auto p-4">
+                        <img :src="sourceImage ?? undefined" class="object-contain rounded-lg" />
                     </div>
                     <form method="dialog" class="modal-backdrop">
                         <button>close</button>

@@ -42,7 +42,15 @@ function imageZoom(source: string|null){
             <div class="w-9/10 mt-4 mb-6">
                 <div class="grid grid-cols-3 gap-4 my-2">
                     <div class="box-content md:box-border w-full rounded-lg bg-white shadow-lg shadow-blue-500/10">
-                        <img :src="category.image_path" @click="imageZoom(category.image_path)" alt="image preview" class="w-auto h-auto max-w-full mx-auto my-auto cursor-pointer">
+                        <template v-if="category.image_path">
+                            <img :src="category.image_path" @click="imageZoom(category.image_path)" alt="image preview" class="w-auto h-auto max-w-full mx-auto my-auto cursor-pointer">
+                        </template>
+                        <template v-else>
+                            <div class="flex items-center justify-center h-48">
+                                <span class="text-gray-400 italic">No Image Available</span>
+                            </div>
+                        </template>
+                        <!-- <img :src="category.image_path" @click="imageZoom(category.image_path)" alt="image preview" class="w-auto h-auto max-w-full mx-auto my-auto cursor-pointer"> -->
                     </div>
                     <div class="grid col-span-2 justify-items-start">
                         <div class="overflow-x-auto">
@@ -70,7 +78,7 @@ function imageZoom(source: string|null){
                     </div>
                 </div>
                 <ModalZoomImage :is-zoom="isZoom" @close-modal="isZoom=false">
-                    <img :src="sourceImage??undefined"  alt="gambar" class="w-auto h-auto max-w-full mx-auto"/>
+                    <img :src="sourceImage??undefined"  alt="gambar"  class="object-contain rounded-lg"/>
                 </ModalZoomImage>
                 <List :products="products"></List>
             </div>

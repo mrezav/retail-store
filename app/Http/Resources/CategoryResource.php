@@ -19,7 +19,7 @@ class CategoryResource extends JsonResource
             'name' => $this->name,
             'slug' => $this->slug,
             'description' => $this->description,
-            'image_path' => $this->image_path ? asset('storage/' . $this->image_path) : asset('storage/categories/default.jpg'),
+            'image_path' => $this->image_path ? asset('storage/' . $this->image_path) : "",
             'products' => ProductResource::collection($this->whenLoaded('products')),
             'created_at' => $this->created_at->toDateTimeString(),
             'updated_at' => $this->updated_at->toDateTimeString(),

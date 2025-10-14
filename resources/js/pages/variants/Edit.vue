@@ -80,7 +80,7 @@ function handleFile(e:Event) {
                     <div class="grid gap-6 border-b border-gray-900/10 pb-12">
                         <div class="grid grid-cols-2 gap-4">
                             <div>
-                                <label for="category" class="block text-sm/6 font-medium text-gray-600">Product <span
+                                <label for="category" class="block text-sm/6 font-medium text-gray-600">Barang <span
                                         class="text-red-500">*</span></label>
                                 <div>
                                     <select v-model="form.product_id"
