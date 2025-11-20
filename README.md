@@ -36,10 +36,9 @@
 |   1| Category             |
 |   2| Product              |
 |   3| User                 |
-|   4| Trancaction          |
-|   5| Trancaction Detail   |
-|   6| Payment              |
-|   7| Buyer                |
-|   8| Images               |
+|   4| Transaction          |
+|   5| Transaction Detail   |
+|   6| Installment Payment  |
+|   7| Product_history      |
 
 </details>
