@@ -1,4 +1,4 @@
-# Aplikasi Toko Bangunan
+# Aplikasi Admin Toko Retail
 
 ## Table of content
 - [Prerequisites](#prerequisites)
