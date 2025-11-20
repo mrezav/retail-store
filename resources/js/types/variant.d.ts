@@ -29,6 +29,8 @@ export interface VariantResource{
     description: string | null;
     image: File | null;
     image_preview: string | null;
-    image_path: string | null;
+    image_path: string;
+    created_at:string;
+    updated_at:string;
     _method:string | null;
 }

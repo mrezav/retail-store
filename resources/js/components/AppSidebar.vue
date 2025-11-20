@@ -6,7 +6,7 @@ import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, Sid
 import { dashboard } from '@/routes';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
-import { BookOpen,   Folder,  Layers2,  LayoutDashboard, Package, TableProperties } from 'lucide-vue-next';
+import { ArrowRightLeft, BookOpen,   Folder,  Layers2,  LayoutDashboard, Package, TableProperties } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 
 const mainNavItems: NavItem[] = [
@@ -29,6 +29,11 @@ const mainNavItems: NavItem[] = [
         title: 'Varian',
         href: '/variants',
         icon: Layers2,
+    },
+    {
+        title: 'Transaksi',
+        href: '/transactions',
+        icon: ArrowRightLeft,
     },
 ];
 

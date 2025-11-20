@@ -196,7 +196,11 @@ function imageZoom(source: string|null){
                                     </template>
                                     <span class="font-bold text-gray-400 mt-2">{{ variant.product?.name }}</span>
                                 </td>
-                                <td class="font-bold text-gray-500">{{ variant.merk }}</td>
+                                <td>
+                                    <Link :href="route('variants.show', variant.id??0)" class="font-bold text-teal-400 hover:underline cursor-pointer">
+                                        {{ variant.merk }}
+                                    </Link>
+                                </td>
                                 <td>{{ variant.color }}</td>
                                 <td>{{ variant.dimension }}</td>
                                 <td>{{ variant.stock }}</td>

@@ -42,7 +42,7 @@ class VariantController extends Controller
                 $q->orderBy($request->input('filters.sort_by'), $request->input('filters.sort_type'));
             },function($q) {
                 $q->latest();
-            } )
+            })
             ->paginate(10)->withQueryString();
         // $variants = vsprintf(str_replace('?', "'%s'", $variants->toSql()), $variants->getBindings());
         // ->toSql();
@@ -98,7 +98,10 @@ class VariantController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $variant =  new VariantResource(Variant::findorfail($id)->load('product'));
+        return Inertia::render('variants/Detail', [
+            'variant' => $variant,
+        ]);
     }
 
     /**

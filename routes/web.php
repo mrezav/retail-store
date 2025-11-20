@@ -1,8 +1,11 @@
 <?php
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\PaymentInstallment;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\VariantController;
+use Faker\Provider\Payment;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -28,6 +31,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('products', ProductController::class);
 
     Route::resource('variants', VariantController::class);
+
+    Route::resource('transactions', TransactionController::class);
+
+    Route::get('get-variants', \App\Http\Controllers\GetVariantsController::class)->name('get-variants');
+
+    Route::post('payment-installment', PaymentInstallment::class)->name('installment.payment');
 });
 
 require __DIR__.'/settings.php';

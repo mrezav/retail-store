@@ -111,7 +111,6 @@ function handleEditVariant(param: VariantForm, i: number) {
 </script>
 
 <template>
-
     <Head title="Create product" />
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex flex-col items-center">
@@ -188,8 +187,7 @@ function handleEditVariant(param: VariantForm, i: number) {
                             </template>
                         </Button>
                         <Link :href="route('products.index')">
-                        <Button
-                            class="rounded bg-gray-200 px-4 py-2 font-semibold text-gray-700 hover:bg-gray-300 cursor-pointer">Kembali</Button>
+                            <Button class="rounded bg-gray-200 px-4 py-2 font-semibold text-gray-700 hover:bg-gray-300 cursor-pointer">Kembali</Button>
                         </Link>
                     </div>
                 </form>

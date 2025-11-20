@@ -2,9 +2,11 @@
 
 namespace App\Http\Resources;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+Carbon::setLocale('id');
 class VariantResource extends JsonResource
 {
     /**
@@ -29,6 +31,8 @@ class VariantResource extends JsonResource
             // 'image_path' => $this->image_path ? asset('storage/' . $this->image_path) : ($this->whenLoaded('product') ? ($this->product->image_path ? asset('storage/' . $this->product->image_path) : "") : ""),
             'image_path' => $this->image_path ? asset('storage/' . $this->image_path) : "",
             // 'variant_images' => VariantImageResource::collection($this->whenLoaded('variant_images'))
+            'created_at' => Carbon::parse($this->created_at)->isoFormat('dddd, D MMMM Y HH:mm:ss'),
+            'updated_at' => Carbon::parse($this->updated_at)->isoFormat('dddd, D MMMM Y HH:mm:ss'),
         ];
     }
 }
